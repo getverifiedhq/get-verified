@@ -1,7 +1,7 @@
 {
-  "name": "sample-typescript",
+  "name": "get-verified",
   "version": "1.0.0",
-  "description": "Sample of Get Verified's Open Neural Network Exchange Model in TypeScript",
+  "description": "South Africa's first open-source digital verification platform",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
