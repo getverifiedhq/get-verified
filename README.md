@@ -14,12 +14,16 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/dubinc/dub/blob/main/LICENSE.md">
-    <img src="https://img.shields.io/github/license/dubinc/dub?label=license&logo=github&color=f80&logoColor=fff" alt="License" />
+  <a href="https://github.com/getverifiedhq/get-verified/blob/main/LICENSE.md">
+    <img src="https://img.shields.io/github/license/getverifiedhq/get-verified?label=license&logo=github&color=f80&logoColor=fff" alt="License" />
   </a>
 </p>
 
 <br/>
+
+## Introduction
+
+Get Verified is the open-source digital identity verification platform for South Africa.
 
 ![](images/output.png)
 
