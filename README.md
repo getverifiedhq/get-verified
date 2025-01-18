@@ -53,8 +53,10 @@ We love our contributors! Here's how you can contribute:
 - [Open an issue](https://github.com/getverifiedhq/get-verified/issues) if you believe you've encountered a bug.
 - Make a [pull request](https://github.com/getverifiedhq/get-verified/pull) to add new features/make quality-of-life improvements/fix bugs.
 
+<br />
+
 <a href="https://github.com/getverifiedhq/get-verified/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=getverifiedhq/get-verified" />
+  <img src="https://contrib.rocks/image?repo=getverifiedhq/get-verified&v=1" />
 </a>
 
 ## Repo Activity
