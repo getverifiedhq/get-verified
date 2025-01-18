@@ -1,0 +1,21 @@
+{
+  "name": "typescript-boilerplate",
+  "version": "1.0.0",
+  "description": "The TypeScript boilerplate with all you need to build your SaaS, AI tool, or any other web app and make your first $ online fast.",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "npm run build && node dist/main.js",
+    "lint": "prettier --write --config prettier.config.js --list-different src/**/*.ts",
+    "start": "node ./dist/main.js",
+    "test": "tsc && jest --coverage --testPathPattern ./dist/.*\\.test\\.js$"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.10.7",
+    "jest": "^29.7.0",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.3"
+  }
+}
