@@ -1,7 +1,7 @@
 {
-  "name": "typescript-boilerplate",
+  "name": "sample-typescript",
   "version": "1.0.0",
-  "description": "The TypeScript boilerplate with all you need to build your SaaS, AI tool, or any other web app and make your first $ online fast.",
+  "description": "Sample of Get Verified's Open Neural Network Exchange Model in TypeScript",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
@@ -17,5 +17,9 @@
     "jest": "^29.7.0",
     "prettier": "^3.4.2",
     "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "onnxruntime-node": "^1.20.1",
+    "sharp": "^0.33.5"
   }
 }
