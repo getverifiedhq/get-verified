@@ -40,10 +40,19 @@ Get Verified is the open-source digital identity verification platform for South
 
 ## Features
 
-- **Document Validation**: Validate identity documents by detecting, extracting, and analyzing key features.
+- **Document Verification**: Verify identity documents by detecting, extracting, and analyzing key features.
   - [ ] ID Book
+    - [ ] Detect
+    - [ ] Extract
+    - [ ] Analyze 
   - [x] Smart ID Card
+    - [x] Detect
+    - [x] Extract
+    - [ ] Analyze 
   - [ ] Passport
+    - [ ] Detect
+    - [ ] Extract
+    - [ ] Analyze 
 
 ## Contributing
 
