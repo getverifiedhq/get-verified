@@ -23,12 +23,12 @@
 
 Get Verified is the open-source digital identity verification platform for South Africa.
 
-![](images/result.png)
+![](images/identity_card.png)
 
 ```json
 {
-  "surname": "Erasmus",
-  "names": "Barend",
+  "surname": "Smith",
+  "names": "John",
   "sex": "M",
   "nationality": "RSA",
   "identity_number": "9605231234567",
@@ -40,19 +40,11 @@ Get Verified is the open-source digital identity verification platform for South
 
 ## Features
 
-- **Document Verification**: Verify identity documents by detecting, extracting, and analyzing key features.
+- **Document Verification**:
   - [ ] ID Book
-    - [ ] Detect
-    - [ ] Extract
-    - [ ] Analyze 
   - [x] Smart ID Card
-    - [x] Detect
-    - [x] Extract
-    - [x] Analyze 
   - [ ] Passport
-    - [ ] Detect
-    - [ ] Extract
-    - [ ] Analyze 
+  - [ ] Driving License
 
 ## Contributing
 
