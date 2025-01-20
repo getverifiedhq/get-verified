@@ -79,16 +79,20 @@ export function postprocess(output: any, width: number, height: number) {
       .map((col) => [col, output[8400 * (col + 4) + index]])
       .reduce((accum, item) => (item[1] > accum[1] ? item : accum), [0, 0]);
 
-    if (prob < 0.5) {
+    if (prob < 0.5) { // TODO
       continue;
     }
+
     const label = [
-      'identity_card',
-      'image',
-      'id_design',
-      'flag',
       'braille',
+      'flag',
+      'id_design',
+      'identity_card',
+      'identity_number',
+      'image',
+      'names',
       'signature',
+      'surname',
     ][class_id];
 
     const xc = output[index];

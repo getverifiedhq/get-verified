@@ -28,7 +28,7 @@ Get Verified is the open-source digital identity verification platform for South
 ```json
 {
   "surname": "Erasmus",
-  "names": "John",
+  "names": "Barend",
   "sex": "M",
   "nationality": "RSA",
   "identity_number": "9605231234567",
@@ -45,10 +45,10 @@ Get Verified is the open-source digital identity verification platform for South
     - [ ] Detect
     - [ ] Extract
     - [ ] Analyze 
-  - [-] Smart ID Card
+  - [x] Smart ID Card
     - [x] Detect
     - [x] Extract
-    - [ ] Analyze 
+    - [x] Analyze 
   - [ ] Passport
     - [ ] Detect
     - [ ] Extract
