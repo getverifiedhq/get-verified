@@ -45,7 +45,7 @@ Get Verified is the open-source digital identity verification platform for South
     - [ ] Detect
     - [ ] Extract
     - [ ] Analyze 
-  - [x] Smart ID Card
+  - [-] Smart ID Card
     - [x] Detect
     - [x] Extract
     - [ ] Analyze 
