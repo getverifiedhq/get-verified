@@ -1,25 +1,23 @@
 import cv2
-from io import BytesIO
 import misc
 import numpy as np
 import pytesseract
+import re
 from ultralytics import YOLO
 
 model = YOLO("get-verified.pt")
 
 
-def execute(filename: str):
-    with open(filename, "rb") as f:
-        bytes = f.read()
-
+def execute(bytes: bytes, rotate_code: int | None):
     nd_array = np.frombuffer(bytes, np.uint8)
 
     image = cv2.cvtColor(cv2.imdecode(
         nd_array, cv2.IMREAD_COLOR), cv2.COLOR_BGR2RGB)
 
-    image = cv2.rotate(image, cv2.ROTATE_90_CLOCKWISE)
+    if rotate_code is not None:
+        image = cv2.rotate(image, rotate_code)
 
-    results = model(image)
+    results = model.predict(image, verbose=False)
 
     boxes = []
 
@@ -35,6 +33,9 @@ def execute(filename: str):
                 text = pytesseract.image_to_string(
                     image[y1:y2, x1:x2], lang="eng").strip()
 
+                if class_id == 4:
+                    text = re.findall(r'\d+', text)[0] if text else None
+
             boxes.append({
                 "center": [center_x, center_y],
                 "class_id": class_id,
@@ -43,39 +44,78 @@ def execute(filename: str):
                 "text": text if text else None
             })
 
+    flag_center = next((x["center"]
+                       for x in boxes if x["class_id"] == 1), None)
+
+    if (flag_center is None):
+        return None
+
+    id_design_center = next((x["center"]
+                            for x in boxes if x["class_id"] == 2), None)
+
+    if (id_design_center is None):
+        return None
+
+    angle = misc.calculate_angle(
+        flag_center[0], flag_center[1], id_design_center[0], id_design_center[1])
+
+    # 2 - rotate right 90
+    # -174 - rotate left 90
+    # 94 - nothing
+    # -86 - rotate 180
+
+    if (angle > -45 and angle <= 45):
+        return execute(bytes, cv2.ROTATE_90_CLOCKWISE)
+
+    if (angle > -225 and angle <= -135):
+        return execute(bytes, cv2.ROTATE_90_COUNTERCLOCKWISE)
+
+    if (angle > -135 and angle <= -45):
+        return execute(bytes, cv2.ROTATE_180)
+
     return boxes
 
 
-filename = "test-0.png"
+filename = "test.png"
 
-boxes = execute(filename)
+with open(filename, "rb") as f:
+    bytes = f.read()
 
-flag_center = next((x["center"] for x in boxes if x["class_id"] == 1), None)
+boxes = execute(bytes, None)
 
-id_design_center = next((x["center"]
-                        for x in boxes if x["class_id"] == 2), None)
+braille = next((x for x in boxes if x["class_id"] == 0), None)
 
-angle = misc.calculate_angle(
-    flag_center[0], flag_center[1], id_design_center[0], id_design_center[1])
+flag = next((x for x in boxes if x["class_id"] == 1), None)
 
-# 2 - rotate right 90
-# -174 - rotate left 90
-# 94 - nothing
-# -86 - rotate 180
+id_design = next((x for x in boxes if x["class_id"] == 2), None)
 
-identity_number = next((x["text"] for x in boxes if x["class_id"] == 4), None)
+identity_card = next((x for x in boxes if x["class_id"] == 3), None)
 
-parsed_identity_number = misc.parse_identity_number(identity_number)
+identity_number = next(
+    (x for x in boxes if x["class_id"] == 4 and x['text']), None)
+
+image = next((x for x in boxes if x["class_id"] == 5), None)
+
+names = next((x for x in boxes if x["class_id"] == 6 and x['text']), None)
+
+signature = next((x for x in boxes if x["class_id"] == 7), None)
+
+surname = next((x for x in boxes if x["class_id"] == 8 and x['text']), None)
+
+if braille is None or flag is None or id_design is None or identity_card is None or identity_number is None or image is None or names is None or signature is None or surname is None:
+    raise RuntimeError
+
+parsed_identity_number = misc.parse_identity_number(identity_number["text"])
 
 obj = {
-    "surname": next((x["text"] for x in boxes if x["class_id"] == 8), None),
-    "names": next((x["text"] for x in boxes if x["class_id"] == 6), None),
+    "surname": surname['text'] if surname else None,
+    "names": names['text'] if names else None,
     "sex": parsed_identity_number["gender"],
     "nationality": "RSA",
-    "identity_number": identity_number,
+    "identity_number": identity_number["text"],
     "date_of_birth": parsed_identity_number["date_of_birth"],
     "country_of_birth": "RSA",
-    "status": "CITIZEN"
+    "status": "CITIZEN" if parsed_identity_number["citizen"] else None
 }
 
 print(obj)
