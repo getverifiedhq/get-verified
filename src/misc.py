@@ -1,5 +1,16 @@
-import re
 from datetime import datetime, timezone
+import re
+import math
+
+def calculate_angle(x1, y1, x2, y2):
+    dx = x2 - x1
+    dy = y2 - y1
+    
+    angle_radians = math.atan2(dy, dx)
+    
+    angle_degrees = math.degrees(angle_radians)
+    
+    return angle_degrees
 
 def parse_identity_number(str: str | None):
     if not str:
