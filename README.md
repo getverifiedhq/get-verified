@@ -8,6 +8,7 @@
     <br />
     <a href="#introduction"><strong>Introduction</strong></a> ·
     <a href="#features"><strong>Features</strong></a> ·
+    <a href="#get-started"><strong>Get Started</strong></a> ·
     <a href="#contributing"><strong>Contributing</strong></a>
 </p>
 
@@ -29,7 +30,7 @@ Get Verified is the open-source digital identity verification platform for South
 {
   "surname": "SMITH",
   "names": "JOHN",
-  "sex": "M",
+  "sex": "MALE",
   "nationality": "RSA",
   "identity_number": "9605231234567",
   "date_of_birth": "1996-05-23",
