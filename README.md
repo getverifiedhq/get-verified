@@ -27,8 +27,8 @@ Get Verified is the open-source digital identity verification platform for South
 
 ```json
 {
-  "surname": "Smith",
-  "names": "John",
+  "surname": "SMITH",
+  "names": "JOHN",
   "sex": "M",
   "nationality": "RSA",
   "identity_number": "9605231234567",
@@ -45,6 +45,24 @@ Get Verified is the open-source digital identity verification platform for South
   - [x] Smart ID Card
   - [ ] Passport
   - [ ] Driving License
+
+## Get Started
+
+```bash
+brew install python@3.10
+
+brew install tesseract
+
+git clone https://github.com/getverifiedhq/get-verified.git
+
+python3.10 -m venv myenv
+
+source myenv/bin/activate
+
+pip install -r requirements.txt
+
+python src/main.py
+```
 
 ## Contributing
 
