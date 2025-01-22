@@ -58,6 +58,7 @@ Get Verified is the open-source digital identity verification platform for South
   * Linux: `apt install -y python3-opencv libopencv-dev`
 * Tesseract
   * macOS: `brew install tesseract`
+  * Linux: `apt-get install -y tesseract-ocr`
 
 ```bash
 git clone https://github.com/getverifiedhq/get-verified.git
