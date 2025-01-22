@@ -1,11 +1,28 @@
+import boto3
 import cv2
+from dotenv import load_dotenv
+from fastapi import FastAPI, Request
 import misc
 import numpy as np
+import os
 import pytesseract
 import re
 from ultralytics import YOLO
+import uuid
+import uvicorn
+
+load_dotenv()
+
+app = FastAPI()
 
 model = YOLO("get-verified.pt")
+
+boto3Client = boto3.client(
+    "s3",
+    aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
+    aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
+    region_name=os.getenv("AWS_REGION"),
+)
 
 
 def predict(bytes: bytes, rotate_code: int | None):
@@ -70,6 +87,7 @@ def predict(bytes: bytes, rotate_code: int | None):
 
     return boxes
 
+
 def analyze(boxes):
     braille = next((x for x in boxes if x["class_id"] == 0), None)
 
@@ -88,54 +106,45 @@ def analyze(boxes):
 
     signature = next((x for x in boxes if x["class_id"] == 7), None)
 
-    surname = next((x for x in boxes if x["class_id"] == 8 and x['text']), None)
+    surname = next(
+        (x for x in boxes if x["class_id"] == 8 and x['text']), None)
 
     if braille is None or flag is None or id_design is None or identity_card is None or identity_number is None or image is None or names is None or signature is None or surname is None:
-        return False
-    
-    return True
-    
+        return None
 
-filename = "test.png"
+    parsed_identity_number = misc.parse_identity_number(
+        identity_number["text"])
 
-with open(filename, "rb") as f:
-    bytes = f.read()
+    return {
+        "surname": surname['text'] if surname else None,
+        "names": names['text'] if names else None,
+        "sex": parsed_identity_number["gender"],
+        "nationality": "RSA",
+        "identity_number": identity_number["text"],
+        "date_of_birth": parsed_identity_number["date_of_birth"],
+        "country_of_birth": "RSA",
+        "status": "CITIZEN" if parsed_identity_number["citizen"] else None
+    }
 
-boxes = predict(bytes, None)
 
-braille = next((x for x in boxes if x["class_id"] == 0), None)
+@app.post("/api/upload")
+async def upload_post(request: Request):
+    body = await request.body()
 
-flag = next((x for x in boxes if x["class_id"] == 1), None)
+    boto3Client.put_object(
+        Bucket=os.getenv("AWS_S3_BUCKET"),
+        Key=f"get-verified/{uuid.uuid4()}",
+        Body=body,
+        ContentType="application/octet-stream"
+    )
 
-id_design = next((x for x in boxes if x["class_id"] == 2), None)
+    boxes = predict(body, None)
 
-identity_card = next((x for x in boxes if x["class_id"] == 3), None)
+    result = analyze(boxes)
 
-identity_number = next(
-    (x for x in boxes if x["class_id"] == 4 and x['text']), None)
+    return {"boxes": boxes, "result": result}
 
-image = next((x for x in boxes if x["class_id"] == 5), None)
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=int(os.getenv("PORT")))
 
-names = next((x for x in boxes if x["class_id"] == 6 and x['text']), None)
-
-signature = next((x for x in boxes if x["class_id"] == 7), None)
-
-surname = next((x for x in boxes if x["class_id"] == 8 and x['text']), None)
-
-if braille is None or flag is None or id_design is None or identity_card is None or identity_number is None or image is None or names is None or signature is None or surname is None:
-    raise RuntimeError
-
-parsed_identity_number = misc.parse_identity_number(identity_number["text"])
-
-obj = {
-    "surname": surname['text'] if surname else None,
-    "names": names['text'] if names else None,
-    "sex": parsed_identity_number["gender"],
-    "nationality": "RSA",
-    "identity_number": identity_number["text"],
-    "date_of_birth": parsed_identity_number["date_of_birth"],
-    "country_of_birth": "RSA",
-    "status": "CITIZEN" if parsed_identity_number["citizen"] else None
-}
-
-print(obj)
+# curl -X POST "http://127.0.0.1:8080/api/upload" -H "Content-Type: application/octet-stream" --data-binary "@test.png"
