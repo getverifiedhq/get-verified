@@ -53,7 +53,7 @@ Get Verified is the open-source digital identity verification platform for South
 
 * Python 3.10
   * macOS: `brew install python@3.10`
-  * Linx: `...`
+  * Linux: `...`
 * OpenCV
   * Linux: `apt install -y python3-opencv libopencv-dev`
 * Tesseract
