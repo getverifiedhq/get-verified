@@ -2,8 +2,9 @@ module.exports = {
   apps: [
     {
       name: "get-verified",
-      script: "python3.10",
+      script: "python",
       args: "src/app.py",
+      interpreter: "./myenv/bin/python",
       instances: 1,
       watch: true,
     },
