@@ -1,3 +1,4 @@
+import cv2
 from datetime import datetime, timezone
 import re
 import math
@@ -42,3 +43,13 @@ def parse_identity_number(str: str | None):
         "gender": "FEMALE" if int(serial) < 5000 else "MALE",
         "permanent_resident": citizenship_flag == "1"
     }
+
+def rotate_coordinates(x1, y1, x2, y2, width, height, rotate_code: int):
+    if rotate_code == cv2.ROTATE_90_CLOCKWISE:        
+        return ((height - y1), x1, (height - y2), x2)
+    elif rotate_code == cv2.ROTATE_180:
+        return ((width - x1), (height - y1), (width - x2), (height - y2))
+    elif rotate_code == cv2.ROTATE_90_COUNTERCLOCKWISE:
+        return (y1, (width - x1), y2, (width - x2))
+
+    return x1, y1, x2, y2
