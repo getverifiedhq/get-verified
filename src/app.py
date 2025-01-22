@@ -176,7 +176,7 @@ async def upload_post(request: Request):
     # cv2.imwrite("out.png", image)
     ###
 
-    return {"boxes": boxes, "result": result, url: url}
+    return {"boxes": boxes, "result": result, "url": url}
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=int(os.getenv("PORT")))
