@@ -111,6 +111,18 @@ def analyze(boxes):
     parsed_identity_number = misc.parse_identity_number(
         identity_number["text"])
 
+    if parsed_identity_number is None:
+        return {
+            "surname": "Unknown",
+            "names": "Unknown",
+            "sex": "Unknown",
+            # "nationality": "RSA",
+            "identity_number": "Unknown",
+            "date_of_birth": "Unknown",
+            # "country_of_birth": "RSA",
+            "status": "Unknown",
+        }
+
     return {
         "surname": surname['text'] if surname else None,
         "names": names['text'] if names else None,

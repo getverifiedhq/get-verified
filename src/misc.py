@@ -15,21 +15,21 @@ def calculate_angle(x1, y1, x2, y2):
 
 def parse_identity_number(str: str | None):
     if not str:
-        raise ValueError()
+        return None
 
     pattern = re.compile(r"^(\d{2})(\d{2})(\d{2})(\d{4})([0-1])\d{2}$")
     match = pattern.match(str)
 
     if not match:
-        raise ValueError()
+        return None
 
     year, month, day, serial, citizenship_flag = match.groups()
 
     if int(month) > 12:
-        raise ValueError()
+        return None
 
     if int(day) > 31:
-        raise ValueError()
+        return None
 
     current_year = datetime.now(timezone.utc).year
     century = (current_year // 100) * 100
