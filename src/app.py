@@ -38,46 +38,49 @@ def upload_image(image):
 
 @app.post("/api/v1")
 async def upload_post(request: Request):
-    body = await request.body()
+    try:
+        body = await request.body()
 
-    key = f"get-verified/{uuid.uuid4()}"
+        key = f"get-verified/{uuid.uuid4()}"
 
-    boto3Client.put_object(
-        Bucket=os.getenv("AWS_S3_BUCKET"),
-        Key=key,
-        Body=body,
-        ContentType="image/png",
-        ACL="public-read"
-    )
+        boto3Client.put_object(
+            Bucket=os.getenv("AWS_S3_BUCKET"),
+            Key=key,
+            Body=body,
+            ContentType="image/png",
+            ACL="public-read"
+        )
 
-    url = f'https://{os.getenv("AWS_S3_BUCKET")}.s3.amazonaws.com/{key}'
+        url = f'https://{os.getenv("AWS_S3_BUCKET")}.s3.amazonaws.com/{key}'
 
-    boxes = predict(body, None)
+        boxes = predict(body, None)
 
-    if boxes is None:
+        if boxes is None:
+            return {"success": False}
+
+        data = analyze(boxes)
+
+        if data is None:
+            return {"success": False}
+
+        ###
+        nd_array = np.frombuffer(body, np.uint8)
+
+        image = cv2.cvtColor(cv2.imdecode(
+            nd_array, cv2.IMREAD_COLOR), cv2.COLOR_BGR2RGB)
+
+        for box in boxes:
+            x1, y1, x2, y2 = map(int, box["coordinates"])
+
+            cv2.rectangle(image, (x1, y1), (x2, y2),
+                          color=(255, 91, 99), thickness=2)
+
+        data["url"] = upload_image(image)
+        ###
+
+        return {"boxes": boxes, "data": data, "success": True, "url": url}
+    except:
         return {"success": False}
-
-    data = analyze(boxes)
-    
-    if data is None:
-        return {"success": False}
-
-    ###
-    nd_array = np.frombuffer(body, np.uint8)
-
-    image = cv2.cvtColor(cv2.imdecode(
-        nd_array, cv2.IMREAD_COLOR), cv2.COLOR_BGR2RGB)
-
-    for box in boxes:
-        x1, y1, x2, y2 = map(int, box["coordinates"])
-
-        cv2.rectangle(image, (x1, y1), (x2, y2),
-                      color=(255, 91, 99), thickness=2)
-
-    data["url"] = upload_image(image)
-    ###
-
-    return {"boxes": boxes, "data": data, "success": True, "url": url}
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=int(os.getenv("PORT")))
