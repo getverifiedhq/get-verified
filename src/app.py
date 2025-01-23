@@ -82,7 +82,8 @@ async def upload_post(request: Request):
         ###
 
         return {"boxes": boxes, "data": data, "success": True, "url": url}
-    except:
+    except Exception as e:
+        print(f"Error: {e}")
         return {"success": False}
 
 if __name__ == "__main__":
