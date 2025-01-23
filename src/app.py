@@ -5,8 +5,11 @@ from fastapi import FastAPI, Request
 from get_verified import analyze, predict
 import numpy as np
 import os
+import torch
 import uuid
 import uvicorn
+
+torch.backends.nnpack.enabled = False
 
 load_dotenv()
 
