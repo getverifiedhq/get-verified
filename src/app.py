@@ -58,6 +58,9 @@ async def upload_post(request: Request):
         return {"success": False}
 
     data = analyze(boxes)
+    
+    if data is None:
+        return {"success": False}
 
     ###
     nd_array = np.frombuffer(body, np.uint8)
