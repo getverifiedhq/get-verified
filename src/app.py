@@ -9,8 +9,6 @@ import torch
 import uuid
 import uvicorn
 
-torch.backends.nnpack.enabled = False
-
 load_dotenv()
 
 app = FastAPI()
