@@ -1,4 +1,7 @@
+import aioboto3
+import asyncio
 import boto3
+from concurrent.futures import ThreadPoolExecutor
 import cv2
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request
@@ -19,21 +22,33 @@ boto3Client = boto3.client(
     region_name=os.getenv("AWS_REGION"),
 )
 
+executor = ThreadPoolExecutor()
 
-def upload_image(image):
-    _, nd_array = cv2.imencode('.png', image)
 
-    key = f"get-verified/other/{uuid.uuid4()}"
+async def upload(bytes: bytes, key: str):
+    session = aioboto3.Session()
 
-    boto3Client.put_object(
-        Bucket=os.getenv("AWS_S3_BUCKET"),
-        Key=key,
-        Body=nd_array.tobytes(),
-        ContentType="image/png",
-        ACL="public-read"
-    )
+    async with session.client(
+        "s3",
+        aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
+        aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
+        region_name=os.getenv("AWS_REGION"),
+    ) as client:
+        await client.put_object(
+            Bucket=os.getenv("AWS_S3_BUCKET"),
+            Key=key,
+            Body=bytes,
+            ContentType="image/png",
+            ACL="public-read"
+        )
 
     return f'https://{os.getenv("AWS_S3_BUCKET")}.s3.amazonaws.com/{key}'
+
+
+async def upload_image(image):
+    _, nd_array = await asyncio.get_event_loop().run_in_executor(executor, cv2.imencode, '.png', image)
+
+    return await upload(nd_array.tobytes(), f"get-verified/result/{uuid.uuid4()}")
 
 
 @app.post("/api/v1")
@@ -41,18 +56,6 @@ async def upload_post(request: Request):
     try:
         body = await request.body()
 
-        key = f"get-verified/{uuid.uuid4()}"
-
-        boto3Client.put_object(
-            Bucket=os.getenv("AWS_S3_BUCKET"),
-            Key=key,
-            Body=body,
-            ContentType="image/png",
-            ACL="public-read"
-        )
-
-        # url = f'https://{os.getenv("AWS_S3_BUCKET")}.s3.amazonaws.com/{key}'
-        
         boxes = predict_thread(body, None)
 
         if boxes is None:
@@ -61,8 +64,8 @@ async def upload_post(request: Request):
         ###
         nd_array = np.frombuffer(body, np.uint8)
 
-        image = cv2.cvtColor(cv2.imdecode(
-            nd_array, cv2.IMREAD_COLOR), cv2.COLOR_BGR2RGB)
+        image = cv2.imdecode(
+            nd_array, cv2.IMREAD_COLOR)
 
         for box in boxes:
             x1, y1, x2, y2 = map(int, box["coordinates"])
@@ -70,7 +73,10 @@ async def upload_post(request: Request):
             cv2.rectangle(image, (x1, y1), (x2, y2),
                           color=(255, 91, 99), thickness=2)
 
-        url = upload_image(image)
+        [_, url] = await asyncio.gather(
+            upload(body, f"get-verified/raw/{uuid.uuid4()}"),
+            upload_image(image)
+        )
         ###
 
         data = analyze(boxes)
