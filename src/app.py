@@ -2,10 +2,9 @@ import boto3
 import cv2
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request
-from get_verified import analyze, predict
+from get_verified import analyze, predict_thread
 import numpy as np
 import os
-import torch
 import uuid
 import uvicorn
 
@@ -52,16 +51,11 @@ async def upload_post(request: Request):
             ACL="public-read"
         )
 
-        url = f'https://{os.getenv("AWS_S3_BUCKET")}.s3.amazonaws.com/{key}'
-
-        boxes = predict(body, None)
+        # url = f'https://{os.getenv("AWS_S3_BUCKET")}.s3.amazonaws.com/{key}'
+        
+        boxes = predict_thread(body, None)
 
         if boxes is None:
-            return {"success": False}
-
-        data = analyze(boxes)
-
-        if data is None:
             return {"success": False}
 
         ###
@@ -76,8 +70,13 @@ async def upload_post(request: Request):
             cv2.rectangle(image, (x1, y1), (x2, y2),
                           color=(255, 91, 99), thickness=2)
 
-        data["url"] = upload_image(image)
+        url = upload_image(image)
         ###
+
+        data = analyze(boxes)
+
+        if data is None:
+            return {"boxes": boxes, "success": False, "url": url}
 
         return {"boxes": boxes, "data": data, "success": True, "url": url}
     except Exception as e:

@@ -2,9 +2,12 @@ import cv2
 import misc
 import numpy as np
 import pytesseract
+import threading
+from typing import Any, Optional
 from ultralytics import YOLO
 
 model = YOLO("get-verified.pt")
+model.eval()
 
 
 def predict(bytes: bytes, rotate_code: int | None):
@@ -82,6 +85,29 @@ def predict(bytes: bytes, rotate_code: int | None):
         box["center"] = center
 
     return boxes
+
+
+def predict_thread_target(bytes: bytes, rotate_code: int | None, result: dict):
+    try:
+        result["result"] = predict(bytes, rotate_code)
+    except Exception as e:
+        result["error"] = str(e)
+
+
+def predict_thread(bytes: bytes, rotate_code: int | None, timeout: int = 5) -> Optional[Any]:
+    result = {}
+    thread = threading.Thread(
+        target=predict_thread_target, args=(bytes, rotate_code, result))
+    thread.start()
+    thread.join(timeout)
+
+    if thread.is_alive():
+        raise RuntimeError("TIMEOUT")
+
+    if "error" in result:
+        raise RuntimeError(result["error"])
+
+    return result.get("result")
 
 
 def analyze(boxes):
