@@ -48,7 +48,7 @@ async def upload(bytes: bytes, key: str):
 async def upload_image(image):
     _, nd_array = await asyncio.get_event_loop().run_in_executor(executor, cv2.imencode, '.png', image)
 
-    return await upload(nd_array.tobytes(), f"get-verified/result/{uuid.uuid4()}")
+    return await upload(nd_array.tobytes(), f"result/{uuid.uuid4()}")
 
 
 @app.post("/api/v1")
@@ -70,11 +70,19 @@ async def upload_post(request: Request):
         for box in boxes:
             x1, y1, x2, y2 = map(int, box["coordinates"])
 
+            # if box["class_id"] == 4 or box["class_id"] == 6:
+            #     image[y1:y2, x1:x2] = cv2.GaussianBlur(
+            #         image[y1:y2, x1:x2], (21, 21), 0)
+            
+            # if box["class_id"] == 5:
+            #     image[y1:y2, x1:x2] = cv2.GaussianBlur(
+            #         image[y1:y2, x1:x2], (101, 101), 0)
+
             cv2.rectangle(image, (x1, y1), (x2, y2),
                           color=(255, 91, 99), thickness=2)
 
         [_, url] = await asyncio.gather(
-            upload(body, f"get-verified/raw/{uuid.uuid4()}"),
+            upload(body, f"raw/{uuid.uuid4()}"),
             upload_image(image)
         )
         ###
