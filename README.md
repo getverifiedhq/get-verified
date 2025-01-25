@@ -45,6 +45,18 @@ This repository provides an open-source model designed to detect security featur
   - [ ] Passport
   - [ ] Driving License
 
+## Labels
+
+* **0**: `braille`
+* **1**: `flag`
+* **2**: `id_design`
+* **3**: `identity_card`
+* **4**: `identity_number`
+* **5**: `image`
+* **6**: `names`
+* **7**: `signature`
+* **8**: `surname`
+
 ## Get Started
 
 **Prerequisites**
