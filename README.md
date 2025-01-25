@@ -1,7 +1,7 @@
 <h3 align="center">Get Verified</h3>
 
 <p align="center">
-    South Africa's first open-source digital verification platform
+    Building the future of identity verification for South Africa
     <br />
     <a href="https://getverified.co.za"><strong>Learn more »</strong></a>
     <br />
@@ -21,8 +21,6 @@
 <br/>
 
 ## Introduction
-
-Get Verified is the open-source digital identity verification platform for South Africa.
 
 ![](images/identity_card.png)
 
@@ -52,13 +50,13 @@ Get Verified is the open-source digital identity verification platform for South
 **Prerequisites**
 
 * Python 3.10
-  * macOS: `brew install python@3.10`
   * Linux: `...`
+  * macOS: `brew install python@3.10`
 * OpenCV
   * Linux: `apt install -y python3-opencv libopencv-dev`
 * Tesseract
-  * macOS: `brew install tesseract`
   * Linux: `apt-get install -y tesseract-ocr`
+  * macOS: `brew install tesseract`
 
 ```bash
 git clone https://github.com/getverifiedhq/get-verified.git
@@ -69,7 +67,7 @@ source myenv/bin/activate
 
 pip install -r requirements.txt
 
-python src/main.py
+python src/main.py test.png
 ```
 
 ## Contributing

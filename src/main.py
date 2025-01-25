@@ -1,18 +1,15 @@
 from get_verified import analyze, predict
+import sys
 
-filename = "test.png"
+filename = sys.argv[1]
 
 with open(filename, "rb") as f:
     bytes = f.read()
 
 boxes = predict(bytes, None)
 
-if boxes is None:
-    raise ValueError
+print(boxes)
 
-obj = analyze(boxes)
-
-if obj is None:
-    raise ValueError
+obj = analyze(boxes) if boxes is not None else None
 
 print(obj)
