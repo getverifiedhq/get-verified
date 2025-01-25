@@ -22,6 +22,8 @@
 
 ## Introduction
 
+This repository provides an open-source model designed to detect security features of South African identity documents.
+
 ![](images/identity_card.png)
 
 ```json
@@ -29,10 +31,8 @@
   "surname": "SMITH",
   "names": "JOHN",
   "sex": "MALE",
-  "nationality": "RSA",
   "identity_number": "9605231234567",
   "date_of_birth": "1996-05-23",
-  "country_of_birth": "RSA",
   "status": "CITIZEN"
 }
 ```
@@ -49,14 +49,14 @@
 
 **Prerequisites**
 
-* Python 3.10
-  * Linux: `...`
-  * macOS: `brew install python@3.10`
-* OpenCV
-  * Linux: `apt install -y python3-opencv libopencv-dev`
-* Tesseract
-  * Linux: `apt-get install -y tesseract-ocr`
-  * macOS: `brew install tesseract`
+- Python 3.10
+  - Linux: `./install-python.sh`
+  - macOS: `brew install python@3.10`
+- OpenCV
+  - Linux: `apt install -y python3-opencv libopencv-dev`
+- Tesseract
+  - Linux: `apt-get install -y tesseract-ocr`
+  - macOS: `brew install tesseract`
 
 ```bash
 git clone https://github.com/getverifiedhq/get-verified.git

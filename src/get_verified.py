@@ -139,23 +139,19 @@ def analyze(boxes):
 
     if parsed_identity_number is None:
         return {
-            "surname": "Unknown",
-            "names": "Unknown",
-            "sex": "Unknown",
-            # "nationality": "RSA",
-            "identity_number": "Unknown",
-            "date_of_birth": "Unknown",
-            # "country_of_birth": "RSA",
-            "status": "Unknown",
+            "surname": surname['text'] if surname else None,
+            "names": names['text'] if names else None,
+            "sex": None,
+            "identity_number": identity_number["text"],
+            "date_of_birth": None,
+            "status": None,
         }
 
     return {
         "surname": surname['text'] if surname else None,
         "names": names['text'] if names else None,
         "sex": parsed_identity_number["gender"],
-        # "nationality": "RSA",
         "identity_number": identity_number["text"],
         "date_of_birth": parsed_identity_number["date_of_birth"],
-        # "country_of_birth": "RSA",
         "status": "CITIZEN" if parsed_identity_number["citizen"] else None
     }
