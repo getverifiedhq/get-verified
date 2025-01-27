@@ -18,9 +18,7 @@ fi
 
 $INSTALL_UTIL update
 
-$INSTALL_UTIL install -y build-essential
-
-$INSTALL_UTIL install -y libbz2-dev libffi-dev libssl-dev python3-dev
+$INSTALL_UTIL install -y build-essential libbz2-dev libffi-dev libssl-dev python3-dev
 
 wget https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tgz
 
