@@ -1,4 +1,5 @@
 import cv2
+import document_feature_detection
 import misc
 import numpy as np
 import pytesseract
@@ -11,10 +12,7 @@ model.eval()
 
 
 def predict(bytes: bytes, rotate_code: int | None):
-    nd_array = np.frombuffer(bytes, np.uint8)
-
-    image = cv2.cvtColor(cv2.imdecode(
-        nd_array, cv2.IMREAD_COLOR), cv2.COLOR_BGR2RGB)
+    image = document_feature_detection(bytes)
 
     if rotate_code is not None:
         image = cv2.rotate(image, rotate_code)
