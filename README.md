@@ -62,7 +62,7 @@ This repository provides an open-source model designed to detect security featur
 **Prerequisites**
 
 - Python 3.10
-  - Linux: `./install-python.sh`
+  - Linux: `./install-python.sh "3.10.12"`
   - macOS: `brew install python@3.10`
 - OpenCV
   - Linux: `apt install -y python3-opencv libopencv-dev`
@@ -79,7 +79,7 @@ source myenv/bin/activate
 
 pip install -r requirements.txt
 
-python src/main.py test.png
+python src/main.py identity_document.png face.png
 ```
 
 ## Contributing

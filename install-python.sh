@@ -1,14 +1,31 @@
+#!/bin/sh
+
+set -euo pipefail
+
+if [ "$(id -u)" -ne 0 ]; then
+    exit 1
+fi
+
+if [ "$#" -ne 1 ]; then
+    exit 1
+fi
+
 apt update
 
-apt install -y build-essential
+apt install -y build-essential libbz2-dev libffi-dev libssl-dev python3-dev
 
-apt install -y libbz2-dev libffi-dev libssl-dev python3-dev
+cleanup() {
+    rm -f "Python-$1.tgz"
+    rm -rf "Python-$1"
+}
 
-wget https://www.python.org/ftp/python/3.10.12/Python-3.10.12.tgz
+trap cleanup EXIT
 
-tar -xvzf Python-3.10.12.tgz
+wget -O "Python-$1.tgz" https://www.python.org/ftp/python/$1/Python-$1.tgz
 
-cd Python-3.10.12
+tar -xvzf Python-$1.tgz
+
+cd Python-$1
 
 ./configure --enable-optimizations
 
@@ -18,6 +35,6 @@ make altinstall
 
 cd ..
 
-rm -f Python-3.10.12.tgz
+rm -f Python-$1.tgz
 
-rm -rf Python-3.10.12
+rm -rf Python-$1
